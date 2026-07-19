@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no" />
+  <title>妄想歌舞伎ゲーム｜引窓</title>
+  <style>
+    :root{
+      --bg:#efe2bf;
+      --ink:#24130c;
+      --accent:#d85a18;
+      --gold:#f3bd2f;
+      --panel:#fff9ea;
+      --danger:#b22a2a;
+      --green:#345b2e;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Yu Gothic","Hiragino Kaku Gothic ProN",sans-serif;
+      background:linear-gradient(#f5ead0,#e9d7ad);
+      color:var(--ink);
+      min-height:100vh;
+      display:flex;
+      justify-content:center;
+    }
+    .app{
+      width:min(100%,520px);
+      min-height:100vh;
+      background:var(--panel);
+      box-shadow:0 0 30px rgba(0,0,0,.18);
+      display:flex;
+      flex-direction:column;
+    }
+    header{
+      padding:14px 16px 10px;
+      background:
+        radial-gradient(circle at 18% 35%, rgba(255,255,255,.18) 0 2px, transparent 3px),
+        linear-gradient(135deg,#d6661d,#bc4512);
+      color:white;
+      border-bottom:5px solid #5f2a12;
+    }
+    .eyebrow{font-size:12px;opacity:.9;letter-spacing:.08em}
+    h1{font-size:25px;margin:2px 0 0}
+    .sub{font-size:13px;margin-top:4px}
+    .hud{
+      display:grid;
+      grid-template-columns:1fr 1fr 1fr;
+      gap:8px;
+      padding:10px 12px;
+      background:#fff2ce;
+      border-bottom:1px solid #d9c69b;
+      font-weight:700;
+      font-size:14px;
+      text-align:center;
+    }
+    .hud span{
+      display:block;
+      font-size:20px;
+      color:#9c3a10;
+    }
+    .stage-wrap{position:relative;padding:10px}
+    canvas{
+      width:100%;
+      aspect-ratio:9/14;
+      display:block;
+      background:#bfc293;
+      border:4px solid #2a160e;
+      image-rendering:pixelated;
+      touch-action:none;
+    }
+    .overlay{
+      position:absolute;
+      inset:10px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:rgba(22,12,7,.66);
+      padding:20px;
+    }
+    .card{
+      background:#fff8e6;
+      border:4px solid #8c3d17;
+      border-radius:14px;
+      padding:20px;
+      width:min(92%,360px);
+      text-align:center;
+      box-shadow:0 12px 30px rgba(0,0,0,.28);
+    }
+    .card h2{margin:0 0 10px;font-size:24px}
+    .card p{line-height:1.7;margin:8px 0}
+    button{
+      border:none;
+      border-radius:999px;
+      padding:13px 22px;
+      font-weight:800;
+      font-size:16px;
+      background:var(--accent);
+      color:white;
+      box-shadow:0 4px 0 #7c2e0f;
+      cursor:pointer;
+    }
+    button:active{transform:translateY(2px);box-shadow:0 2px 0 #7c2e0f}
+    .instructions{
+      padding:4px 16px 16px;
+      font-size:14px;
+      line-height:1.7;
+    }
+    .instructions strong{color:#9c3a10}
+    .tiny{font-size:12px;color:#6f5a48}
+    .legend{
+      display:flex;gap:8px;flex-wrap:wrap;margin-top:8px
+    }
+    .tag{
+      background:#f3e0b6;border:1px solid #d4b273;border-radius:999px;padding:4px 8px
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="eyebrow">somelabo企画・現代版プロトタイプ</div>
+    <h1>妄想歌舞伎ゲーム「引窓」</h1>
+    <div class="sub">小判を投げて、濡髪長五郎のほくろを落とせ！</div>
+  </header>
+
+  <div class="hud">
+    <div>命中<span id="hits">0 / 3</span></div>
+    <div>残り時間<span id="time">30</span></div>
+    <div>得点<span id="score">0</span></div>
+  </div>
+
+  <div class="stage-wrap">
+    <canvas id="game" width="450" height="700" aria-label="歌舞伎ゲーム画面"></canvas>
+    <div class="overlay" id="overlay">
+      <div class="card">
+        <h2>遊び方</h2>
+        <p>画面下から指で<strong>上方向へスワイプ</strong>すると、小判を投げます。</p>
+        <p>動く濡髪長五郎の<strong>顔に3回命中</strong>させれば成功です。</p>
+        <p>犬や、お幸・お早に当てると減点。</p>
+        <button id="startBtn">ゲーム開始</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="instructions">
+    <strong>物語：</strong>与兵衛は、義理の兄・濡髪長五郎を逃がすため、小判で顔のほくろを落として人相を変えようとします。
+    <div class="legend">
+      <span class="tag">顔に命中 ＋500</span>
+      <span class="tag">犬に命中 −100</span>
+      <span class="tag">女性に命中 −300</span>
+    </div>
+    <p class="tiny">※歌舞伎の名場面を遊びながら知るための試作版です。人物・舞台は仮のオリジナル表現です。</p>
+  </div>
+</div>
+
+<script>
+(() => {
+  const canvas = document.getElementById('game');
+  const ctx = canvas.getContext('2d');
+  const overlay = document.getElementById('overlay');
+  const startBtn = document.getElementById('startBtn');
+  const hitsEl = document.getElementById('hits');
+  const timeEl = document.getElementById('time');
+  const scoreEl = document.getElementById('score');
+
+  let running = false, score = 0, hits = 0, timeLeft = 30, last = 0, timerAcc = 0;
+  let dragStart = null;
+  let coins = [];
+  let particles = [];
+
+  const player = {x:225,y:625};
+  const target = {x:225,y:155,vx:85,w:44,h:62};
+  const women = [
+    {x:92,y:190,vx:38,w:34,h:54,label:'お幸'},
+    {x:350,y:208,vx:-48,w:34,h:54,label:'お早'}
+  ];
+  const dogs = [
+    {x:85,y:400,vx:72,w:44,h:27},
+    {x:315,y:490,vx:-58,w:44,h:27}
+  ];
+
+  function reset(){
+    score = 0; hits = 0; timeLeft = 30; timerAcc = 0; coins = []; particles = [];
+    target.x = 225; target.vx = 85;
+    women[0].x = 92; women[1].x = 350;
+    dogs[0].x = 85; dogs[1].x = 315;
+    updateHud();
+  }
+
+  function updateHud(){
+    hitsEl.textContent = `${hits} / 3`;
+    timeEl.textContent = timeLeft;
+    scoreEl.textContent = score;
+  }
+
+  function startGame(){
+    reset();
+    running = true;
+    overlay.style.display = 'none';
+    last = performance.now();
+    requestAnimationFrame(loop);
+  }
+
+  function endGame(success){
+    running = false;
+    overlay.style.display = 'flex';
+    overlay.innerHTML = `
+      <div class="card">
+        <h2>${success ? '長五郎、逃走成功！' : '時間切れ…'}</h2>
+        <p>${success ? 'ほくろを落とし、人相を変えることができました。' : 'もう一度、小判をよく狙って投げてみましょう。'}</p>
+        <p><strong>得点：${score}</strong></p>
+        <button id="restartBtn">もう一度遊ぶ</button>
+      </div>`;
+    document.getElementById('restartBtn').onclick = startGame;
+  }
+
+  function addCoin(vx,vy){
+    coins.push({x:player.x,y:player.y-18,vx,vy,r:8,alive:true});
+  }
+
+  function hitTest(c,o){
+    return c.x > o.x-o.w/2 && c.x < o.x+o.w/2 &&
+           c.y > o.y-o.h/2 && c.y < o.y+o.h/2;
+  }
+
+  function spark(x,y,text){
+    particles.push({x,y,text,life:1});
+  }
+
+  function update(dt){
+    target.x += target.vx*dt;
+    if(target.x<65 || target.x>385) target.vx *= -1;
+
+    women.forEach(w=>{
+      w.x += w.vx*dt;
+      if(w.x<50 || w.x>400) w.vx *= -1;
+    });
+
+    dogs.forEach(d=>{
+      d.x += d.vx*dt;
+      if(d.x<45 || d.x>405) d.vx *= -1;
+    });
+
+    coins.forEach(c=>{
+      c.x += c.vx*dt;
+      c.y += c.vy*dt;
+      c.vy += 185*dt;
+
+      if(c.alive && hitTest(c,target)){
+        c.alive=false; hits++; score+=500; spark(c.x,c.y,'命中！ +500');
+        updateHud();
+        if(hits>=3) setTimeout(()=>endGame(true),180);
+      }
+
+      women.forEach(w=>{
+        if(c.alive && hitTest(c,w)){
+          c.alive=false; score=Math.max(0,score-300); spark(c.x,c.y,'誤射 -300'); updateHud();
+        }
+      });
+
+      dogs.forEach(d=>{
+        if(c.alive && hitTest(c,d)){
+          c.alive=false; score=Math.max(0,score-100); spark(c.x,c.y,'犬 -100'); updateHud();
+        }
+      });
+
+      if(c.y>730 || c.y<-30 || c.x<-30 || c.x>480) c.alive=false;
+    });
+    coins = coins.filter(c=>c.alive);
+
+    particles.forEach(p=>{p.y-=22*dt;p.life-=dt;});
+    particles=particles.filter(p=>p.life>0);
+
+    timerAcc += dt;
+    if(timerAcc>=1){
+      timerAcc-=1;
+      timeLeft--;
+      updateHud();
+      if(timeLeft<=0) endGame(false);
+    }
+  }
+
+  function rect(x,y,w,h,color){
+    ctx.fillStyle=color;ctx.fillRect(Math.round(x-w/2),Math.round(y-h/2),w,h);
+  }
+
+  function drawActor(x,y,kind='target'){
+    ctx.save();
+    ctx.translate(Math.round(x),Math.round(y));
+    if(kind==='target'){
+      rect(0,12,36,42,'#7b4d9a');
+      rect(0,-16,30,28,'#f2d0ae');
+      rect(0,-31,34,12,'#111');
+      ctx.fillStyle='#111';ctx.fillRect(-13,-24,5,5);ctx.fillRect(8,-24,5,5);
+      ctx.fillStyle='#b31f1f';ctx.fillRect(-2,-12,5,5); // ほくろ目印
+      ctx.fillStyle='#fff';ctx.font='bold 11px sans-serif';ctx.textAlign='center';
+      ctx.fillText('長五郎',0,42);
+    } else {
+      rect(0,10,30,38, kind==='woman1' ? '#d06a86':'#6a8dcf');
+      rect(0,-15,25,25,'#f2d0ae');
+      rect(0,-28,28,10,'#111');
+    }
+    ctx.restore();
+  }
+
+  function drawDog(d){
+    ctx.save();ctx.translate(Math.round(d.x),Math.round(d.y));
+    rect(0,0,38,20,'#6a3a18');
+    rect(18,-7,17,16,'#6a3a18');
+    rect(24,-16,6,9,'#3a1d0d');
+    rect(12,-16,6,9,'#3a1d0d');
+    ctx.fillStyle='#fff';ctx.fillRect(19,-10,3,3);
+    ctx.fillStyle='#c82020';ctx.fillRect(17,-4,8,3);
+    ctx.restore();
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    // 背景：芝居小屋・引窓
+    ctx.fillStyle='#cabf89';ctx.fillRect(0,0,450,700);
+    ctx.fillStyle='#9c6b43';ctx.fillRect(0,0,450,105);
+    ctx.fillStyle='#e9e2cc';ctx.fillRect(55,20,115,70);ctx.fillRect(280,20,115,70);
+    ctx.strokeStyle='#8a7257';ctx.lineWidth=3;
+    for(let i=0;i<6;i++){
+      ctx.beginPath();ctx.moveTo(55+i*23,20);ctx.lineTo(55+i*23,90);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(280+i*23,20);ctx.lineTo(280+i*23,90);ctx.stroke();
+    }
+    for(let i=0;i<4;i++){
+      ctx.beginPath();ctx.moveTo(55,20+i*23);ctx.lineTo(170,20+i*23);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(280,20+i*23);ctx.lineTo(395,20+i*23);ctx.stroke();
+    }
+    ctx.fillStyle='#22170f';ctx.fillRect(185,20,80,85);
+
+    // 地面の模様
+    ctx.fillStyle='#667347';
+    [[35,330],[390,360],[52,520],[405,565]].forEach(([x,y])=>{
+      ctx.fillRect(x,y,18,5);ctx.fillRect(x+6,y-6,18,5);
+    });
+
+    drawActor(target.x,target.y,'target');
+    drawActor(women[0].x,women[0].y,'woman1');
+    drawActor(women[1].x,women[1].y,'woman2');
+    dogs.forEach(drawDog);
+
+    // プレイヤー
+    ctx.save();ctx.translate(player.x,player.y);
+    rect(0,0,50,45,'#d5a33e');
+    rect(0,-30,34,30,'#f2d0ae');
+    rect(0,-45,38,13,'#111');
+    ctx.fillStyle='#111';ctx.fillRect(-12,-34,5,5);ctx.fillRect(7,-34,5,5);
+    ctx.fillStyle='#fff';ctx.font='bold 12px sans-serif';ctx.textAlign='center';ctx.fillText('与兵衛',0,35);
+    ctx.restore();
+
+    coins.forEach(c=>{
+      ctx.beginPath();ctx.arc(c.x,c.y,c.r,0,Math.PI*2);
+      ctx.fillStyle='#f6c12a';ctx.fill();
+      ctx.strokeStyle='#8c5c00';ctx.lineWidth=2;ctx.stroke();
+      ctx.fillStyle='#9b6900';ctx.fillRect(c.x-1,c.y-5,2,10);
+    });
+
+    if(dragStart){
+      ctx.strokeStyle='rgba(150,50,20,.65)';ctx.lineWidth=5;ctx.setLineDash([10,8]);
+      ctx.beginPath();ctx.moveTo(player.x,player.y-15);ctx.lineTo(dragStart.cx,dragStart.cy);ctx.stroke();
+      ctx.setLineDash([]);
+    }
+
+    particles.forEach(p=>{
+      ctx.globalAlpha=Math.max(0,p.life);
+      ctx.fillStyle='#8d1f10';ctx.font='bold 18px sans-serif';ctx.textAlign='center';
+      ctx.fillText(p.text,p.x,p.y);
+      ctx.globalAlpha=1;
+    });
+  }
+
+  function loop(now){
+    if(!running){ draw(); return; }
+    const dt = Math.min((now-last)/1000,.035);
+    last=now;
+    update(dt);
+    draw();
+    if(running) requestAnimationFrame(loop);
+  }
+
+  function pointerPos(e){
+    const r=canvas.getBoundingClientRect();
+    return {
+      x:(e.clientX-r.left)*canvas.width/r.width,
+      y:(e.clientY-r.top)*canvas.height/r.height
+    };
+  }
+
+  canvas.addEventListener('pointerdown',e=>{
+    if(!running) return;
+    const p=pointerPos(e);
+    dragStart={x:p.x,y:p.y,cx:p.x,cy:p.y};
+    canvas.setPointerCapture(e.pointerId);
+  });
+  canvas.addEventListener('pointermove',e=>{
+    if(!dragStart) return;
+    const p=pointerPos(e);dragStart.cx=p.x;dragStart.cy=p.y;
+  });
+  canvas.addEventListener('pointerup',e=>{
+    if(!dragStart || !running) return;
+    const p=pointerPos(e);
+    const dx=dragStart.x-p.x, dy=dragStart.y-p.y;
+    const power=Math.min(1.35,Math.max(.45,Math.hypot(dx,dy)/120));
+    const vx=dx*3.2*power;
+    const vy=-Math.max(280,dy*4.3*power);
+    addCoin(vx,vy);
+    dragStart=null;
+  });
+
+  startBtn.onclick=startGame;
+  draw();
+})();
+</script>
+</body>
+</html>
