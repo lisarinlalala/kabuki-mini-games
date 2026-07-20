@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#8d2027">
+<link rel="preload" as="image" href="nagagoro_optimized.png">
 <title>引窓 Story｜長五郎を狙え</title>
 <style>
 :root{--red:#8d2027;--gold:#d7aa35;--paper:#f5ecd1;--wood:#6f4b34;--ink:#2d211b;--gap:24%}
@@ -22,13 +23,13 @@ button{font:inherit}
 .room{position:absolute;inset:0;background:linear-gradient(#fff9e8,#e0c48b)}
 .tatami{position:absolute;left:0;right:0;bottom:0;height:22%;background:repeating-linear-gradient(90deg,#4e5e2d33 0 1px,transparent 1px 26px),#b3a970;border-top:4px solid #706635}
 .track{position:absolute;inset:0;z-index:3;overflow:hidden}
-.person{position:absolute;left:0;top:48%;width:172px;height:265px;transform:translate(-50%,-50%);will-change:left;transition:filter .25s,transform .2s}
+.person{position:absolute;left:0;top:48%;width:150px;height:230px;transform:translate(-50%,-50%);will-change:left;transition:filter .25s,transform .2s}
 .person.hit-pause{filter:brightness(1.15);transform:translate(-50%,-50%) scale(1.08)}
-.body{position:absolute;left:23%;right:23%;bottom:0;height:60%;border-radius:46% 46% 12% 12%;background:repeating-linear-gradient(45deg,#2b5c73 0 13px,#efd4a0 13px 17px,#2b5c73 17px 30px);border:4px solid #26323a;transition:background .4s}
+.body{position:absolute;left:23%;right:23%;bottom:0;height:60%;border-radius:46% 46% 12% 12%;background:repeating-linear-gradient(45deg,#2a2a2a 0 14px,#f2f2f2 14px 20px,#2a2a2a 20px 34px);border:4px solid #26323a;transition:background .4s}
 .head{position:absolute;left:27%;top:9%;width:46%;height:42%;border-radius:46%;background:#e4b079;border:4px solid #402d25;z-index:3;transition:background .45s,transform .45s}
 .hair{position:absolute;left:-7%;top:-14%;width:114%;height:43%;border-radius:50% 50% 34% 34%;background:#231b19;border:3px solid #111}
 .brow,.eye,.nose,.mouth{position:absolute}.brow{top:43%;width:24%;height:5px;background:#31211e;border-radius:50%;transition:.4s}.brow.l{left:16%;transform:rotate(-7deg)}.brow.r{right:16%;transform:rotate(7deg)}.eye{top:50%;width:14%;height:7px;background:#251a18;border-radius:50%;transition:.4s}.eye.l{left:21%}.eye.r{right:21%}.nose{left:48%;top:51%;width:6%;height:17%;border-right:2px solid #59312088;border-bottom:2px solid #59312088;border-radius:0 0 60% 0}.mouth{left:35%;bottom:17%;width:30%;height:8%;border-bottom:4px solid #712b2f;border-radius:50%;transition:.4s}
-.mole{position:absolute;right:13%;top:59%;width:24px;height:24px;border-radius:50%;background:#261b18;border:2px solid #ffffff44;z-index:9;box-shadow:0 2px 4px #0006;transition:.35s}
+.mole{position:absolute;right:13%;top:59%;width:30px;height:30px;border-radius:50%;background:#261b18;border:2px solid #ffffff44;z-index:9;box-shadow:0 2px 4px #0006;transition:.35s}
 .mole.first{background:#d21f2b;box-shadow:0 0 0 5px #fff4,0 0 16px #e7232f;transform:scale(1.25)}
 .mole.second{background:#c0222b;right:5%;top:68%;transform:rotate(28deg) scale(1.25);animation:wobble .32s infinite alternate}
 @keyframes wobble{to{transform:rotate(-22deg) translateY(4px) scale(1.25)}}
@@ -38,16 +39,12 @@ button{font:inherit}
 .hood:before{content:"";position:absolute;inset:0;border:18px solid #5f3858;border-bottom-width:26px;border-radius:50% 50% 42% 42%;clip-path:polygon(0 0,100% 0,100% 55%,76% 75%,66% 100%,34% 100%,24% 75%,0 55%)}
 .hood:after{content:"";position:absolute;left:50%;bottom:-16px;width:70%;height:30px;transform:translateX(-50%);background:#5f3858;clip-path:polygon(0 0,100% 0,82% 100%,18% 100%)}
 .person.changed .hood{opacity:1;transform:scale(1)}.person.changed .head{background:#f0c590}.person.changed .brow.l{transform:rotate(10deg)}.person.changed .brow.r{transform:rotate(-10deg)}.person.changed .eye{height:5px;top:52%}.person.changed .mouth{width:38%;left:31%;border-bottom-width:5px;transform:translateY(-2px)}.person.changed .body{background:repeating-linear-gradient(45deg,#58406c 0 13px,#d2b8d7 13px 17px,#58406c 17px 30px)}
-.shoji{position:absolute;inset:0;z-index:10;pointer-events:none}.panel{
-position:absolute;
-top:0;bottom:0;
-width:calc((100% - var(--gap))/2);
+.shoji{position:absolute;inset:0;z-index:10;pointer-events:none}.panel{position:absolute;top:0;bottom:0;width:calc((100% - var(--gap))/2);
 background:
-repeating-linear-gradient(to right,#7a573b 0 3px,transparent 3px 42px),
-repeating-linear-gradient(to bottom,#7a573b 0 3px,transparent 3px 42px),
+repeating-linear-gradient(to right,#7a573b 0 3px,transparent 3px 52px),
+repeating-linear-gradient(to bottom,#7a573b 0 3px,transparent 3px 52px),
 #f8f1d8;
-border:6px solid #76553f;
-}.panel.left{left:0}.panel.right{right:0}.shoji.open .panel.left{transform:translateX(-94%)}.shoji.open .panel.right{transform:translateX(94%)}
+border:6px solid #76553f;box-shadow:0 0 12px #0003;transition:transform .8s}.panel.left{left:0}.panel.right{right:0}.shoji.open .panel.left{transform:translateX(-94%)}.shoji.open .panel.right{transform:translateX(94%)}
 .gap-frame{position:absolute;top:0;bottom:0;left:50%;width:var(--gap);transform:translateX(-50%);z-index:12;border-left:7px solid #76553f;border-right:7px solid #76553f;box-shadow:inset 0 0 18px #0004;pointer-events:none}.gap-frame:before{content:"";position:absolute;left:0;right:0;top:18%;height:6px;background:#76553f;box-shadow:0 96px 0 #76553f,0 192px 0 #76553f}
 .aim{position:absolute;left:50%;top:46%;width:72px;height:72px;transform:translate(-50%,-50%);border:3px dashed #8d202788;border-radius:50%;z-index:13;pointer-events:none;animation:pulse 1.15s ease-in-out infinite}
 .aim:before,.aim:after{content:"";position:absolute;background:#8d2027}.aim:before{width:94px;height:2px;left:-14px;top:33px}.aim:after{height:94px;width:2px;top:-14px;left:33px}@keyframes pulse{50%{transform:translate(-50%,-50%) scale(1.08);opacity:.65}}
@@ -59,67 +56,30 @@ border:6px solid #76553f;
 .overlay{position:absolute;inset:0;z-index:50;display:grid;place-items:center;padding:24px;background:linear-gradient(#18120e99,#18120ecc),radial-gradient(circle at 50% 20%,#b88952,#34251c 70%);color:#fff7de;text-align:center;transition:.45s}.overlay.hidden{opacity:0;visibility:hidden;pointer-events:none}.card{width:min(100%,500px);padding:26px 20px;background:#461b18ed;border:5px double #e2bd62;box-shadow:0 12px 30px #0007}.small{font:13px system-ui;letter-spacing:.18em;opacity:.85}.card h2{font-size:clamp(30px,9vw,50px);margin:8px 0 12px}.card p{font-size:clamp(15px,4vw,19px);line-height:1.75}.btn{width:min(100%,320px);min-height:50px;border-radius:999px;padding:10px 18px;font-weight:700;cursor:pointer}.primary{border:2px solid #fff0b5;background:var(--gold);color:#3c2705;box-shadow:0 5px 0 #8b6512}.secondary{margin-top:12px;border:1px solid #fff;background:transparent;color:#fff7de}.ending{background:#110e0be8}.ending .card{background:#461b18f7}.congrats{font:clamp(25px,7vw,42px) Georgia,serif!important;color:#f5cf68;margin:0!important}.trivia{margin:15px auto 18px;padding:11px 13px;background:#fff5d8;color:#3d2b22;border-radius:7px;text-align:left;line-height:1.55;font:14px system-ui}
 @media(max-height:650px){.bar{height:48px}.hud{padding:5px 12px}.stage{min-height:calc(100svh - 86px)}.house{top:6%;bottom:3%}.person{height:230px;width:150px}.tip{bottom:1.5%;padding:6px 12px}}
 
-/* 長五郎：PNG画像版 */
-.person{
-  position:absolute;
-  left:0;
-  top:52%;
-  width:clamp(128px,24vw,172px);
-  height:auto;
-  aspect-ratio:740 / 1383;
-  transform:translate(-50%,-50%);
-  will-change:left;
-  transition:filter .25s,transform .2s,opacity .7s,left 1.1s ease-in;
-  z-index:4;
-}
-.person.hit-pause{
-  filter:brightness(1.15);
-  transform:translate(-50%,-50%) scale(1.08);
-}
+/* 長五郎の見た目だけを画像に置換。ゲームの動作処理は変更していません。 */
 .nagagoro-img{
-  display:block;
-  opacity:1;
-  visibility:visible;
+  position:absolute;
+  inset:0;
   width:100%;
-  height:auto;
+  height:100%;
+  object-fit:contain;
+  display:block;
   pointer-events:none;
   user-select:none;
-  -webkit-user-drag:none;
 }
-.mole{
-  position:absolute;
-  left:62%;
-  top:16.3%;
-  width:clamp(18px,4vw,25px);
-  height:clamp(18px,4vw,25px);
-  border-radius:50%;
-  background:#261b18;
-  border:2px solid #ffffff55;
-  z-index:9;
-  box-shadow:0 2px 4px #0007;
-  transform:translate(-50%,-50%);
-  transition:.35s;
+.person .head.image-hit-area{
+  left:36%;
+  top:4%;
+  width:28%;
+  height:21%;
+  border:0;
+  background:transparent;
+  border-radius:45%;
+  z-index:6;
 }
-.mole.first{
-  background:#d21f2b;
-  box-shadow:0 0 0 5px #fff4,0 0 16px #e7232f;
-  transform:translate(-50%,-50%) scale(1.25);
-}
-.mole.second{
-  background:#c0222b;
-  left:68%;
-  top:20%;
-  transform:translate(-50%,-50%) rotate(28deg) scale(1.25);
-  animation:wobble .32s infinite alternate;
-}
-.mole.fall{
-  animation:fall .8s ease-in forwards;
-}
-.person.changed .nagagoro-img{
-  filter:saturate(.8) brightness(.92);
-}
-@media(max-height:650px){
-  .person{width:clamp(112px,21vw,150px);top:51%}
+.person .head.image-hit-area .mole{
+  right:-2%;
+  top:58%;
 }
 
 </style>
@@ -127,47 +87,46 @@ border:6px solid #76553f;
 <body>
 <main class="app">
 <header class="bar"><h1>引窓 Story</h1><a href="../">ゲーム選択へ</a></header>
-<section class="hud"><p>隙間に現れた長五郎を狙え！</p><div class="hearts" aria-label="命中数"><span class="hitmark">一</span><span class="hitmark">二</span><span class="hitmark">三</span></div></section>
+<section class="hud"><p>隙間に現れたほくろを狙え！</p><div class="hearts" aria-label="命中数"><span class="hitmark">一</span><span class="hitmark">二</span><span class="hitmark">三</span></div></section>
 <section class="stage" id="stage" aria-label="障子の隙間を動く長五郎を狙うゲーム">
 <div class="moon"></div>
 <div class="house" id="house">
   <div class="room"></div><div class="tatami"></div>
   <div class="track">
     <div class="person" id="person" aria-label="濡髪長五郎">
-      <img class="nagagoro-img" id="nagagoroImg" src="nagagoro_transparent.png" alt="縞の着物を着た濡髪長五郎">
-      <span class="mole" id="mole" aria-hidden="true"></span>
+      <img class="nagagoro-img" src="nagagoro_optimized.png" alt="縞の着物を着た濡髪長五郎">
+      <div class="head image-hit-area" id="head"><span class="mole" id="mole"></span></div>
+      <div class="hood"></div>
     </div>
   </div>
   <div class="shoji" id="shoji"><div class="panel left"></div><div class="panel right"></div></div>
   <div class="aim"></div>
 </div>
 <div class="coin-shot" id="shot">小</div><div class="flash" id="flash">命中！</div><div class="thanks" id="thanks">ありがとう！</div>
-<div class="tip" id="tip" aria-live="polite">中央の隙間に顔が来た瞬間をタップ！</div>
+<div class="tip" id="tip" aria-live="polite">中央の隙間にほくろが見えた瞬間をタップ！</div>
 </section>
-<section class="overlay" id="start"><div class="card"><div class="small">TARGET STORY MODE</div><h2>引窓</h2><p>長五郎は障子の奥を動いています。<br>中央の隙間に顔が見えた瞬間、小判を投げてください。<br><strong>三回命中</strong>で、ほくろが落ちます。</p><button class="btn primary" id="startBtn" type="button">的当てをはじめる</button></div></section>
+<section class="overlay" id="start"><div class="card"><div class="small">TARGET STORY MODE</div><h2>引窓</h2><p>長五郎は障子の奥を動いています。<br>中央の隙間にほくろが見えた瞬間、小判を投げてください。<br><strong>三回命中</strong>で、ほくろが落ちます。</p><button class="btn primary" id="startBtn" type="button">的当てをはじめる</button></div></section>
 <section class="overlay ending hidden" id="ending"><div class="card"><p class="congrats">Congratulations!</p><h2>長五郎を逃がした！</h2><p>ほくろを落とし、頬かむりで姿を変えた長五郎は、無事に逃げていきました。</p><div class="trivia"><strong>『引窓』豆知識</strong><br>歌舞伎『双蝶々曲輪日記』の一場面を、的当てゲームとして再構成しました。</div><button class="btn primary" id="replay" type="button">もう一度遊ぶ</button><button class="btn secondary" id="menu" type="button">ゲーム選択へ戻る</button></div></section>
 </main>
 <script>
 (()=>{
 const q=id=>document.getElementById(id);
-const stage=q('stage'),house=q('house'),person=q('person'),nagagoroImg=q('nagagoroImg'),mole=q('mole'),shot=q('shot'),flash=q('flash'),thanks=q('thanks'),tip=q('tip'),shoji=q('shoji'),start=q('start'),ending=q('ending');
+const stage=q('stage'),house=q('house'),person=q('person'),head=q('head'),mole=q('mole'),shot=q('shot'),flash=q('flash'),thanks=q('thanks'),tip=q('tip'),shoji=q('shoji'),start=q('start'),ending=q('ending');
 const marks=[...document.querySelectorAll('.hitmark')];
-let playing=false,locked=false,hits=0,x=50,dir=1,last=0,speed=42,raf=0;
+let playing=false,locked=false,hits=0,x=18,dir=1,last=0,speed=24,raf=0;
 function loop(t){
   if(!playing){last=t;raf=requestAnimationFrame(loop);return}
   if(!last)last=t;
   const dt=Math.min((t-last)/1000,.04);last=t;
-  if(!locked){x+=dir*speed*dt;if(x>78){x=78;dir=-1}else if(x<22){x=22;dir=1}person.style.left=x+'%'}
+  if(!locked){x+=dir*speed*dt;if(x>82){x=82;dir=-1}else if(x<18){x=18;dir=1}person.style.left=x+'%'}
   raf=requestAnimationFrame(loop);
 }
 raf=requestAnimationFrame(loop);
-function moleIsHittable(clientX,clientY){
-  const r=mole.getBoundingClientRect();
-  const cx=r.left+r.width/2;
-  const cy=r.top+r.height/2;
-  const tolerance=Math.max(34,r.width*1.7);
-  const insideGap=x>40&&x<60;
-  return insideGap && Math.hypot(clientX-cx,clientY-cy)<=tolerance;
+function visibleNow(){return x>43&&x<57}
+function nearFace(clientX,clientY){
+  const r=head.getBoundingClientRect();
+  const cx=r.left+r.width*.62,cy=r.top+r.height*.62;
+  return Math.hypot(clientX-cx,clientY-cy)<Math.max(52,r.width*.75)
 }
 function shootTo(clientX,clientY){
   const r=stage.getBoundingClientRect();
@@ -186,36 +145,22 @@ function registerHit(){
     setTimeout(()=>{person.style.transition='left 1.1s ease-in,opacity .7s';person.style.left='122%';person.style.opacity='.25'},1900);
     setTimeout(()=>{playing=false;ending.classList.remove('hidden')},3100);
   }
-  if(hits<3)setTimeout(()=>{person.classList.remove('hit-pause');locked=false;speed=42+hits*5},700)
+  if(hits<3)setTimeout(()=>{person.classList.remove('hit-pause');locked=false;speed=24+hits*4},700)
 }
 function miss(){showFlash('はずれ！',true);tip.textContent='隙間に顔が来るまで待とう';setTimeout(()=>tip.classList.remove('miss'),600)}
 function attempt(e){
   if(!playing||locked||hits>=3)return;
-  const p=e.touches?e.touches[0]:e;
-  const hit=moleIsHittable(p.clientX,p.clientY);
-  shootTo(p.clientX,p.clientY);
-  setTimeout(()=>{if(hit)registerHit();else miss()},300)
+  const p=e.touches?e.touches[0]:e;shootTo(p.clientX,p.clientY);
+  setTimeout(()=>{if(visibleNow()&&nearFace(p.clientX,p.clientY))registerHit();else miss()},300)
 }
 function reset(){
-  hits=0;x=50;dir=1;speed=42;last=0;playing=true;locked=false;person.style.transition='';person.style.opacity='1';person.style.left=x+'%';person.className='person';mole.className='mole';shoji.classList.remove('open');thanks.classList.remove('show');tip.className='tip';tip.textContent='中央の隙間に顔が来た瞬間をタップ！';marks.forEach(m=>m.classList.remove('on'));ending.classList.add('hidden')
+  hits=0;x=18;dir=1;speed=24;last=0;playing=true;locked=false;person.style.transition='';person.style.opacity='1';person.style.left=x+'%';person.className='person';mole.className='mole';shoji.classList.remove('open');thanks.classList.remove('show');tip.className='tip';tip.textContent='中央の隙間にほくろが見えた瞬間をタップ！';marks.forEach(m=>m.classList.remove('on'));ending.classList.add('hidden')
 }
-q('startBtn').addEventListener('click',async()=>{
-  try{
-    if(!nagagoroImg.complete) await nagagoroImg.decode();
-  }catch(_){}
-  start.classList.add('hidden');
-  reset();
-});
+q('startBtn').addEventListener('click',()=>{start.classList.add('hidden');reset()});
 stage.addEventListener('pointerdown',attempt);
 q('replay').addEventListener('click',reset);
 q('menu').addEventListener('click',()=>location.href='../');
-window.addEventListener('keydown',e=>{
-  if((e.key==='Enter'||e.key===' ')&&playing){
-    const r=mole.getBoundingClientRect();
-    attempt({clientX:r.left+r.width/2,clientY:r.top+r.height/2});
-    e.preventDefault();
-  }
-});
+window.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&playing){const r=head.getBoundingClientRect();attempt({clientX:r.left+r.width*.6,clientY:r.top+r.height*.6});e.preventDefault()}});
 })();
 </script>
 </body>
